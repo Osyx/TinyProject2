@@ -32,7 +32,7 @@ class WordNode {
         return word;
     }
 
-    private class AboutWord {
+    public class AboutWord {
         Attributes attributes;
         PartOfSpeech pos;
 

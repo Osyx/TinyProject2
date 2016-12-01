@@ -8,6 +8,7 @@ public class RunnerClass {
     public static void main(String[] args) throws Exception{
             TinySearchEngineBase searchEngine = new TinySearchEngine();
             Driver.run(searchEngine);
+
         }
 
 }
