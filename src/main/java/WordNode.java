@@ -20,11 +20,16 @@ class WordNode {
     }
 
     public void addOccurence(Attributes attributes, Word word) {
-        AboutWord temp = new AboutWord(attributes, word.pos);
-        this.aboutList.add(temp);
+        boolean alreadyExists = false;
+        if (aboutList.get(aboutList.size() - 1).getAttributes().document == attributes.document) {
+            aboutList.get(aboutList.size() - 1).increaseCount();
+        } else {
+            AboutWord temp = new AboutWord(attributes, word.pos);
+            this.aboutList.add(temp);
+        }
     }
 
-    public LinkedList getAboutList() {
+    public LinkedList<AboutWord> getAboutList() {
         return aboutList;
     }
 
@@ -35,6 +40,13 @@ class WordNode {
     public class AboutWord {
         Attributes attributes;
         PartOfSpeech pos;
+        int count = 1;
+
+        public void setAboutWord(AboutWord newWord) {
+            this.attributes = newWord.getAttributes();
+            this.pos = newWord.getPos();
+            this.count = newWord.getCount();
+        }
 
         AboutWord(Attributes attributes, PartOfSpeech pos) {
             this.attributes = attributes;
@@ -48,5 +60,19 @@ class WordNode {
         public PartOfSpeech getPos() {
             return pos;
         }
+
+        public int getCount() {
+            return count;
+        }
+
+        public void setCount(int count) {
+            this.count = count;
+        }
+
+        public void increaseCount() {
+            count++;
+        }
+
+
     }
 }

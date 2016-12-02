@@ -67,7 +67,7 @@ public class BinarySearchTree<Key extends Comparable<Key>, Value> {
 
     public List<Document> search(String s) {
         List<Document> documentList = new ArrayList<Document>();
-
+        s = s.toLowerCase();
         if(letterArr[s.charAt(0) - 'a'] == null)
             return null;
 
@@ -77,7 +77,6 @@ public class BinarySearchTree<Key extends Comparable<Key>, Value> {
 
         for (int i = 0; i < aboutList.size(); i++)
             documentList.add(aboutList.get(i).getAttributes().document);
-
         return documentList;
     }
 
