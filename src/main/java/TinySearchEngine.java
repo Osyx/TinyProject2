@@ -59,7 +59,6 @@ public class TinySearchEngine implements TinySearchEngineBase {
             return createDocument(aboutList);
 
         }
-
         return bst.search(s);
     }
 
