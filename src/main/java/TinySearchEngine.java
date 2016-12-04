@@ -38,7 +38,10 @@ public class TinySearchEngine implements TinySearchEngineBase {
 
             List<WordNode.AboutWord> aboutList = new ArrayList<WordNode.AboutWord>();
             for (String i:arguments) {
-                LinkedList<WordNode.AboutWord> temp = bst.search(i, bst.letterArr[i.charAt(0) - 'a']).getAboutList();
+                WordNode tempNode = bst.search(i, bst.letterArr[i.charAt(0) - 'a']);
+                if (tempNode == null)
+                    continue;
+                LinkedList<WordNode.AboutWord> temp = tempNode.getAboutList();
                 for (int j = 0; j < temp.size(); j++) {
                     boolean alreadyExists = false;
                     for (int k = 0; k < aboutList.size() - 1; k++) {
