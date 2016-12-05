@@ -19,7 +19,9 @@ public class TinySearchEngine implements TinySearchEngineBase {
     }
 
     public List<Document> search(String s) {
-        s = s.toLowerCase().replaceAll("[^a-z]", "");
+        s = s.toLowerCase().replaceAll("[^a-z ]", "");
+        if(s.trim().isEmpty())
+            return null;
         String property = "";
         String[] arguments;
         boolean sort = false;
