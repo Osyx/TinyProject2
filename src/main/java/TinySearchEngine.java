@@ -14,18 +14,18 @@ public class TinySearchEngine implements TinySearchEngineBase {
     BinarySearchTree bst = new BinarySearchTree();
 
     public void insert(Word word, Attributes attributes) {
-        if(word.word.toLowerCase().replaceAll("[^a-z]", "@").charAt(0) != '@') {
+        if(word.word.toLowerCase().replaceAll("[^a-z]", "@").charAt(0) != '@')
             bst.addNode(word, attributes);
-        }
-
     }
 
     public List<Document> search(String s) {
         String property = "";
         String[] arguments;
+        boolean sort = false;
         boolean ascending = true;
         if(s.contains(" ")) {
             if (s.contains("orderby")) {
+                sort = true;
                 int index = s.indexOf("orderby");
                 arguments = s.split(" ");
                 property = arguments[arguments.length - 2];
@@ -54,8 +54,8 @@ public class TinySearchEngine implements TinySearchEngineBase {
                         aboutList.add(temp.get(j));
                 }
             }
-
-            BubbleSort.sort(aboutList, property, ascending);
+            if(sort)
+                BubbleSort.sort(aboutList, property, ascending);
             return createDocument(aboutList);
 
         }

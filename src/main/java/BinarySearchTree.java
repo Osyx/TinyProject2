@@ -50,7 +50,7 @@ public class BinarySearchTree<Key extends Comparable<Key>, Value> {
         for (int i = 0; i < shortestLength; i++) {
             if(oldWord.charAt(i) != newWord.charAt(i)) {
                 if (oldWord.charAt(i) - 'a' < newWord.charAt(i) - 'a')
-                   return 1;
+                    return 1;
                 else
                     return -1;
             }
