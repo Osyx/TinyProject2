@@ -13,7 +13,7 @@ public class BubbleSort {
                     shouldSwap = list.get(i).getCount() > list.get(i + 1).getCount();
                 if (property.matches("popularity"))
                     shouldSwap = list.get(i).attributes.document.popularity > list.get(i + 1).attributes.document.popularity;
-                if (property.matches("occurence"))
+                if (property.matches("occurrence"))
                     shouldSwap = list.get(i).attributes.occurrence > list.get(i + 1).attributes.occurrence;
 
                 if (shouldSwap) {
