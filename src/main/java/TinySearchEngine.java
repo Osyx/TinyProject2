@@ -46,52 +46,7 @@ public class TinySearchEngine implements TinySearchEngineBase {
             arguments = s.split(" ");
 
         aboutList = postToInfix(arguments);
-        //s = s.toLowerCase().replaceAll("[^a-z ]", "");
-        /*
-        if(s.trim().isEmpty())
-            return null;
-        String property = "";
-        String[] arguments;
-        boolean sort = false;
-        boolean ascending = true;
-        if(s.contains(" ")) {
-            if (s.contains("orderby")) {
-                sort = true;
-                int index = s.indexOf("orderby");
-                arguments = s.split(" ");
-                property = arguments[arguments.length - 2];
-                if(arguments[arguments.length - 1].matches("desc"))
-                    ascending = false;
-                arguments = s.substring(0, index).split(" ");
-            } else {
-                arguments = s.split(" ");
-            }
 
-            List<WordNode.AboutWord> aboutList = new ArrayList<WordNode.AboutWord>();
-            for (String i:arguments) {
-                WordNode tempNode = bst.search(i, bst.letterArr[i.charAt(0) - 'a']);
-                if (tempNode == null)
-                    continue;
-                LinkedList<WordNode.AboutWord> temp = tempNode.getAboutList();
-                for (int j = 0; j < temp.size(); j++) {
-                    boolean alreadyExists = false;
-                    for (int k = 0; k < aboutList.size() - 1; k++) {
-                        if (aboutList.get(k).getAttributes().document == temp.get(j).getAttributes().document) {
-                            alreadyExists = true;
-                            break;
-                        }
-                    }
-                    if (!alreadyExists)
-                        aboutList.add(temp.get(j));
-                }
-            }
-            if(sort)
-                BubbleSort.sort(aboutList, property, ascending);
-            return createDocument(aboutList);
-
-        }
-        return bst.search(s);
-        */
         if(sort)
             BubbleSort.sort(aboutList, property, ascending);
         return createDocument(aboutList);
@@ -103,6 +58,7 @@ public class TinySearchEngine implements TinySearchEngineBase {
         List<WordNode.AboutWord> aboutList = new ArrayList<WordNode.AboutWord>();
         for(String string:arr)
             System.out.println(string);
+        String operand;
 
         for(int arrayI = arr.length - 1; arrayI >= 0; arrayI--) {
             System.out.println(arr[arrayI]);
@@ -112,10 +68,10 @@ public class TinySearchEngine implements TinySearchEngineBase {
             }
             else {
                 System.out.println("Found operator " + arr[arrayI]);
-                if(arr[arrayI] != "|") {
+                if(arr[arrayI].equals("|")) {
                     for (int i = 0; i < 2; i++) {
-                        arr[arrayI] = operandStack.pop();
-                        WordNode tempNode = bst.search(arr[arrayI], bst.letterArr[arr[arrayI].charAt(0) - 'a']);
+                        operand = operandStack.pop();
+                        WordNode tempNode = bst.search(operand, bst.letterArr[operand.charAt(0) - 'a']);
                         if (tempNode == null)
                             continue;
                         LinkedList<WordNode.AboutWord> temp = tempNode.getAboutList();
@@ -132,7 +88,7 @@ public class TinySearchEngine implements TinySearchEngineBase {
                         }
                     }
                 }
-                if(arr[arrayI] != "+") {
+                if(arr[arrayI].equals("+")) {
                     for (int i = 0; i < 2; i++) {
                         arr[arrayI] = operandStack.pop();
                         WordNode tempNode = bst.search(arr[arrayI], bst.letterArr[arr[arrayI].charAt(0) - 'a']);
@@ -153,7 +109,7 @@ public class TinySearchEngine implements TinySearchEngineBase {
                     }
                 }
 
-                if(arr[arrayI] != "-") {
+                if(arr[arrayI].equals("-")) {
                     for (int i = 0; i < 2; i++) {
                         arr[arrayI] = operandStack.pop();
                         WordNode tempNode = bst.search(arr[arrayI], bst.letterArr[arr[arrayI].charAt(0) - 'a']);
