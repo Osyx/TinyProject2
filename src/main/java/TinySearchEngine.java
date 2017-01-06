@@ -1,11 +1,10 @@
 import se.kth.id1020.TinySearchEngineBase;
 import se.kth.id1020.util.Attributes;
 import se.kth.id1020.util.Document;
+import se.kth.id1020.util.Sentence;
 import se.kth.id1020.util.Word;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Oscar on 16-11-30.
@@ -13,13 +12,42 @@ import java.util.List;
 public class TinySearchEngine implements TinySearchEngineBase {
     BinarySearchTree bst = new BinarySearchTree();
 
-    public void insert(Word word, Attributes attributes) {
-        if(word.word.toLowerCase().replaceAll("[^a-z]", "@").charAt(0) != '@')
-            bst.addNode(word, attributes);
+    public void preInserts() {
+
+    }
+
+    public void insert(Sentence sentence, Attributes attributes) {
+        for(Word word : sentence.getWords()) {
+            if (word.word.toLowerCase().replaceAll("[^a-z]", "@").charAt(0) != '@')
+                bst.addNode(word, attributes);
+        }
+    }
+
+    public void postInserts() {
+
     }
 
     public List<Document> search(String s) {
-        s = s.toLowerCase().replaceAll("[^a-z ]", "");
+        String property = "";
+        String[] arguments;
+        boolean sort = false;
+        boolean ascending = true;
+        List<WordNode.AboutWord> aboutList;
+
+        if (s.contains("orderby")) {
+            sort = true;
+            int index = s.indexOf("orderby");
+            arguments = s.split(" ");
+            property = arguments[arguments.length - 2];
+            if(arguments[arguments.length - 1].matches("desc"))
+                ascending = false;
+            arguments = s.substring(0, index).split(" ");
+        } else
+            arguments = s.split(" ");
+
+        aboutList = postToInfix(arguments);
+        //s = s.toLowerCase().replaceAll("[^a-z ]", "");
+        /*
         if(s.trim().isEmpty())
             return null;
         String property = "";
@@ -63,6 +91,95 @@ public class TinySearchEngine implements TinySearchEngineBase {
 
         }
         return bst.search(s);
+        */
+        if(sort)
+            BubbleSort.sort(aboutList, property, ascending);
+        return createDocument(aboutList);
+    }
+
+    public List<WordNode.AboutWord> postToInfix(String[] arr) {
+        Stack<String> operatorStack = new Stack<String>();
+        Stack<String> operandStack = new Stack<String>();
+        List<WordNode.AboutWord> aboutList = new ArrayList<WordNode.AboutWord>();
+        for(String string:arr)
+            System.out.println(string);
+
+        for(int arrayI = arr.length - 1; arrayI >= 0; arrayI--) {
+            System.out.println(arr[arrayI]);
+            if(arr[arrayI].length() > 1) {
+                System.out.println("Found operand " + arr[arrayI]);
+                operandStack.push(arr[arrayI]);
+            }
+            else {
+                System.out.println("Found operator " + arr[arrayI]);
+                if(arr[arrayI] != "|") {
+                    for (int i = 0; i < 2; i++) {
+                        arr[arrayI] = operandStack.pop();
+                        WordNode tempNode = bst.search(arr[arrayI], bst.letterArr[arr[arrayI].charAt(0) - 'a']);
+                        if (tempNode == null)
+                            continue;
+                        LinkedList<WordNode.AboutWord> temp = tempNode.getAboutList();
+                        for (int j = 0; j < temp.size(); j++) {
+                            boolean alreadyExists = false;
+                            for (int k = 0; k < aboutList.size() - 1; k++) {
+                                if (aboutList.get(k).getAttributes().document == temp.get(j).getAttributes().document) {
+                                    alreadyExists = true;
+                                    break;
+                                }
+                            }
+                            if (!alreadyExists)
+                                aboutList.add(temp.get(j));
+                        }
+                    }
+                }
+                if(arr[arrayI] != "+") {
+                    for (int i = 0; i < 2; i++) {
+                        arr[arrayI] = operandStack.pop();
+                        WordNode tempNode = bst.search(arr[arrayI], bst.letterArr[arr[arrayI].charAt(0) - 'a']);
+                        if (tempNode == null)
+                            continue;
+                        LinkedList<WordNode.AboutWord> temp = tempNode.getAboutList();
+                        for (int j = 0; j < temp.size(); j++) {
+                            boolean alreadyExists = false;
+                            for (int k = 0; k < aboutList.size() - 1; k++) {
+                                if (aboutList.get(k).getAttributes().document == temp.get(j).getAttributes().document) {
+                                    alreadyExists = true;
+                                    break;
+                                }
+                            }
+                            if (alreadyExists)
+                                aboutList.add(temp.get(j));
+                        }
+                    }
+                }
+
+                if(arr[arrayI] != "-") {
+                    for (int i = 0; i < 2; i++) {
+                        arr[arrayI] = operandStack.pop();
+                        WordNode tempNode = bst.search(arr[arrayI], bst.letterArr[arr[arrayI].charAt(0) - 'a']);
+                        if (tempNode == null)
+                            continue;
+                        LinkedList<WordNode.AboutWord> temp = tempNode.getAboutList();
+                        for (int j = 0; j < temp.size(); j++) {
+                            boolean alreadyExists = false;
+                            for (int k = 0; k < aboutList.size() - 1; k++) {
+                                if (aboutList.get(k).getAttributes().document == temp.get(j).getAttributes().document) {
+                                    aboutList.remove(k);
+                                    break;
+                                }
+                            }
+                            if (!alreadyExists)
+                                aboutList.add(temp.get(j));
+                        }
+                    }
+                }
+            }
+        }
+        return aboutList;
+    }
+
+    public String infix(String s) {
+        return null;
     }
 
     private List<Document> createDocument(List<WordNode.AboutWord> list) {
